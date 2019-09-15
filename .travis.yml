@@ -1,15 +1,12 @@
-dist: xenial
+sudo: required
+language: csharp
+solution: antbear-dotnet.csproj
+mono: none
 addons:
   snaps:
   - name: dotnet-sdk
     classic: true
     channel: latest/beta
-sudo: required
-language: csharp
-mono: none
-solution: antbear-dotnet.csproj
 script:
   - sudo snap alias dotnet-sdk.dotnet dotnet
-  - dotnet --version
-  - dotnet restore
-  - dotnet build
+  - dotnet restore && dotnet build
