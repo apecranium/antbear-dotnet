@@ -1,3 +1,3 @@
-# dotnet-pg
+# antbear-dotnet
 
-probably a better name eventually
+doing some stuff with dotnet core 3

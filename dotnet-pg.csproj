@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <RootNamespace>dotnet_pg</RootNamespace>
+    <RootNamespace>Antbear</RootNamespace>
   </PropertyGroup>
 
-
   <ItemGroup>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.0.0-preview9" />
   </ItemGroup>
 
 </Project>
