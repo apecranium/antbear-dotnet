@@ -22,7 +22,6 @@ namespace Antbear.Controllers {
       if (id == null) {
         return NotFound();
       }
-
       var pet = await _context.Pets.FirstOrDefaultAsync(m => m.Id == id);
       if (pet == null) {
         return NotFound();
@@ -46,6 +45,65 @@ namespace Antbear.Controllers {
         return RedirectToAction(nameof(Index));
       }
       return View(pet);
+    }
+
+    public async Task<IActionResult> Edit(int? id) {
+      if (id == null) {
+        return NotFound();
+      }
+      var pet = await _context.Pets.FindAsync(id);
+      if (pet == null) {
+        return NotFound();
+      }
+      return View(pet);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, [Bind("Id, Name, BirthDate")] Pet pet) {
+      if (id != pet.Id) {
+        return NotFound();
+      }
+      if (ModelState.IsValid) {
+        try {
+          _context.Update(pet);
+          await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException) {
+          if (!await PetExists(pet.Id)) {
+            return NotFound();
+          }
+          else {
+            throw;
+          }
+        }
+        return RedirectToAction(nameof(Index));
+      }
+      return View(pet);
+    }
+
+    public async Task<IActionResult> Delete(int? id) {
+      if (id == null) {
+        return NotFound();
+      }
+      var pet = await _context.Pets.FirstOrDefaultAsync(e => e.Id == id);
+      if (pet == null) {
+        return NotFound();
+      }
+      return View(pet);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id) {
+      var pet = await _context.Pets.FindAsync(id);
+      _context.Pets.Remove(pet);
+      await _context.SaveChangesAsync();
+      return RedirectToAction(nameof(Index));
+    }
+
+    private async Task<bool> PetExists(int id) {
+      return await _context.Pets.AnyAsync(e => e.Id == id);
     }
   }
 }

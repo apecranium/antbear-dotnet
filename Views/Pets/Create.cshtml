@@ -1,5 +1,4 @@
 @model Pet
-
 @{
   ViewData["Title"] = "Create";
 }
@@ -13,16 +12,16 @@
       <div asp-validation-summary="ModelOnly" class="text-danger"></div>
       <div class="form-group">
         <label asp-for="Name" class="control-label"></label>
-        <input asp-for="Name" class="form-control"/>
+        <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
       </div>
       <div class="form-group">
         <label asp-for="BirthDate" class="control-label"></label>
-        <input asp-for="BirthDate" class="form-control"/>
+        <input asp-for="BirthDate" class="form-control" />
         <span asp-validation-for="BirthDate" class="text-danger"></span>
       </div>
       <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary"/>
+        <input type="submit" value="Create" class="btn btn-primary" />
       </div>
     </form>
   </div>
