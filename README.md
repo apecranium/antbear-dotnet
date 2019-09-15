@@ -12,6 +12,8 @@ dotnet restore
 **database:**
 ```shell
 docker-compose up -d
+dotnet ef migrations add init
+dotnet ef database update
 ```
 
 **run:**
