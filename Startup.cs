@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Antbear.Models;
+using Antbear.Services;
 
 namespace Antbear {
 
@@ -21,6 +22,7 @@ namespace Antbear {
       services.AddRazorPages();
       services.AddDbContext<PetContext>(options =>
         options.UseNpgsql(Configuration.GetConnectionString("Postgres")));
+      services.AddScoped<PetService>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {

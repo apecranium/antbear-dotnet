@@ -3,30 +3,30 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Antbear.Models;
+using Antbear.Services;
 
 namespace Antbear.Controllers {
 
   public class PetsController : Controller {
 
-    private readonly PetContext _context;
+    private readonly PetService _petService;
 
-    public PetsController(PetContext context) {
-      _context = context;
+    public PetsController(PetService petService) {
+      _petService = petService;
     }
 
     public async Task<IActionResult> Index() {
-      return View(await _context.Pets.ToListAsync());
+      return View(await _petService.GetPets());
     }
 
     public async Task<IActionResult> Details(int? id) {
       if (id == null) {
         return NotFound();
       }
-      var pet = await _context.Pets.FirstOrDefaultAsync(m => m.Id == id);
+      var pet = await _petService.GetPet(id.GetValueOrDefault());
       if (pet == null) {
         return NotFound();
       }
-
       return View(pet);
     }
 
@@ -40,8 +40,7 @@ namespace Antbear.Controllers {
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Id, Name, BirthDate")] Pet pet) {
       if (ModelState.IsValid) {
-        _context.Add(pet);
-        await _context.SaveChangesAsync();
+        await _petService.CreatePet(pet);
         return RedirectToAction(nameof(Index));
       }
       return View(pet);
@@ -51,7 +50,7 @@ namespace Antbear.Controllers {
       if (id == null) {
         return NotFound();
       }
-      var pet = await _context.Pets.FindAsync(id);
+      var pet = await _petService.GetPet(id.GetValueOrDefault());
       if (pet == null) {
         return NotFound();
       }
@@ -66,11 +65,10 @@ namespace Antbear.Controllers {
       }
       if (ModelState.IsValid) {
         try {
-          _context.Update(pet);
-          await _context.SaveChangesAsync();
+          await _petService.UpdatePet(pet);
         }
         catch (DbUpdateConcurrencyException) {
-          if (!await PetExists(pet.Id)) {
+          if (!await _petService.PetExists(pet.Id)) {
             return NotFound();
           }
           else {
@@ -86,7 +84,7 @@ namespace Antbear.Controllers {
       if (id == null) {
         return NotFound();
       }
-      var pet = await _context.Pets.FirstOrDefaultAsync(e => e.Id == id);
+      var pet = await _petService.GetPet(id.GetValueOrDefault());
       if (pet == null) {
         return NotFound();
       }
@@ -96,14 +94,8 @@ namespace Antbear.Controllers {
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id) {
-      var pet = await _context.Pets.FindAsync(id);
-      _context.Pets.Remove(pet);
-      await _context.SaveChangesAsync();
+      await _petService.DeletePet(id);
       return RedirectToAction(nameof(Index));
-    }
-
-    private async Task<bool> PetExists(int id) {
-      return await _context.Pets.AnyAsync(e => e.Id == id);
     }
   }
 }
