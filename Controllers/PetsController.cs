@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Antbear.Models;
 using Antbear.Services;
 
@@ -10,8 +11,10 @@ namespace Antbear.Controllers {
   public class PetsController : Controller {
 
     private readonly PetService _petService;
+    private readonly ILogger<PetsController> _logger;
 
-    public PetsController(PetService petService) {
+    public PetsController(ILogger<PetsController> logger, PetService petService) {
+      _logger = logger;
       _petService = petService;
     }
 
@@ -67,11 +70,12 @@ namespace Antbear.Controllers {
         try {
           await _petService.UpdatePet(pet);
         }
-        catch (DbUpdateConcurrencyException) {
+        catch (DbUpdateConcurrencyException error) {
           if (!await _petService.PetExists(pet.Id)) {
             return NotFound();
           }
           else {
+            _logger.LogError(error.ToString());
             throw;
           }
         }
