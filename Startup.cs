@@ -7,17 +7,19 @@ using Microsoft.EntityFrameworkCore;
 using Antbear.Models;
 using Antbear.Services;
 
-namespace Antbear {
-
-  public class Startup {
-
+namespace Antbear
+{
+  public class Startup
+  {
     public IConfiguration Configuration { get; }
 
-    public Startup(IConfiguration configuration) {
+    public Startup(IConfiguration configuration)
+    {
       Configuration = configuration;
     }
 
-    public void ConfigureServices(IServiceCollection services) {
+    public void ConfigureServices(IServiceCollection services)
+    {
       services.AddControllersWithViews();
       services.AddRazorPages();
       services.AddDbContext<PetContext>(options =>
@@ -25,11 +27,14 @@ namespace Antbear {
       services.AddScoped<PetService>();
     }
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-      if (env.IsDevelopment()) {
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+      if (env.IsDevelopment())
+      {
         app.UseDeveloperExceptionPage();
       }
-      else {
+      else
+      {
         app.UseExceptionHandler("/Error");
         app.UseHsts();
       }
@@ -37,7 +42,8 @@ namespace Antbear {
       app.UseStaticFiles();
       app.UseRouting();
       app.UseAuthorization();
-      app.UseEndpoints(endpoints => {
+      app.UseEndpoints(endpoints =>
+      {
         endpoints.MapControllerRoute(
           name: "default",
           pattern: "{controller=Home}/{action=Index}/{id?}"
