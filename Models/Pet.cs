@@ -4,23 +4,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Antbear.Models
 {
-  public class PetContext : DbContext
-  {
-    public PetContext(DbContextOptions<PetContext> options) : base(options)
-    {
-    }
-  
-    public DbSet<Pet> Pets { get; set; }
-  }
-
   public class Pet
   {
     public int Id { get; set; }
 
-    [StringLength(60, MinimumLength = 1)]
     [Required]
+    [StringLength(60, MinimumLength = 1)]
     public string Name { get; set; }
 
+    [Required]
     [Display(Name = "Birth Date")]
     [DataType(DataType.Date)]
     public DateTime BirthDate { get; set; }

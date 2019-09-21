@@ -22,9 +22,9 @@ namespace Antbear
     {
       services.AddControllersWithViews();
       services.AddRazorPages();
-      services.AddDbContext<PetContext>(options =>
+      services.AddDbContext<AppDbContext>(options =>
         options.UseNpgsql(Configuration.GetConnectionString("Postgres")));
-      services.AddScoped<PetService>();
+      services.AddScoped<IService<Pet>, PetService>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

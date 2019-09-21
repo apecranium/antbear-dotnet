@@ -10,10 +10,10 @@ namespace Antbear.Controllers
 {
   public class PetsController : Controller
   {
-    private readonly PetService _petService;
+    private readonly IService<Pet> _petService;
     private readonly ILogger<PetsController> _logger;
 
-    public PetsController(ILogger<PetsController> logger, PetService petService)
+    public PetsController(ILogger<PetsController> logger, IService<Pet> petService)
     {
       _logger = logger;
       _petService = petService;
@@ -21,7 +21,7 @@ namespace Antbear.Controllers
 
     public async Task<IActionResult> Index()
     {
-      return View(await _petService.GetPets());
+      return View(await _petService.GetAll());
     }
 
     public async Task<IActionResult> Details(int? id)
@@ -30,7 +30,7 @@ namespace Antbear.Controllers
       {
         return NotFound();
       }
-      var pet = await _petService.GetPet(id.GetValueOrDefault());
+      var pet = await _petService.GetOne(id.GetValueOrDefault());
       if (pet == null)
       {
         return NotFound();
@@ -47,11 +47,11 @@ namespace Antbear.Controllers
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id, Name, BirthDate")] Pet pet)
+    public async Task<IActionResult> Create([Bind("Name, BirthDate")] Pet pet)
     {
       if (ModelState.IsValid)
       {
-        await _petService.CreatePet(pet);
+        await _petService.Create(pet);
         return RedirectToAction(nameof(Index));
       }
       return View(pet);
@@ -63,7 +63,7 @@ namespace Antbear.Controllers
       {
         return NotFound();
       }
-      var pet = await _petService.GetPet(id.GetValueOrDefault());
+      var pet = await _petService.GetOne(id.GetValueOrDefault());
       if (pet == null)
       {
         return NotFound();
@@ -73,7 +73,7 @@ namespace Antbear.Controllers
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Id, Name, BirthDate")] Pet pet)
+    public async Task<IActionResult> Edit(int id, [Bind("Name, BirthDate")] Pet pet)
     {
       if (id != pet.Id)
       {
@@ -83,11 +83,11 @@ namespace Antbear.Controllers
       {
         try
         {
-          await _petService.UpdatePet(pet);
+          await _petService.Update(pet);
         }
         catch (DbUpdateConcurrencyException error)
         {
-          if (!await _petService.PetExists(pet.Id))
+          if (!await _petService.Exists(pet.Id))
           {
             return NotFound();
           }
@@ -108,7 +108,7 @@ namespace Antbear.Controllers
       {
         return NotFound();
       }
-      var pet = await _petService.GetPet(id.GetValueOrDefault());
+      var pet = await _petService.GetOne(id.GetValueOrDefault());
       if (pet == null)
       {
         return NotFound();
@@ -120,7 +120,7 @@ namespace Antbear.Controllers
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-      await _petService.DeletePet(id);
+      await _petService.Delete(id);
       return RedirectToAction(nameof(Index));
     }
   }

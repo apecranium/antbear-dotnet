@@ -3,41 +3,56 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Antbear.Models;
 
-namespace Antbear.Services {
+namespace Antbear.Services
+{
+  public class PetService : IService<Pet>
+  {
+    private readonly AppDbContext _context;
 
-  public class PetService {
-
-    private readonly PetContext _context;
-
-    public PetService(PetContext context) {
+    public PetService(AppDbContext context)
+    {
       _context = context;
     }
 
-    public async Task<bool> PetExists(int id) {
+    public async Task<bool> Exists(int id)
+    {
       return await _context.Pets.AnyAsync(e => e.Id == id);
     }
 
-    public async Task<List<Pet>> GetPets() {
+    public async Task<List<Pet>> GetAll()
+    {
       return await _context.Pets.ToListAsync();
     }
 
-    public async Task<Pet> GetPet(int id) {
+    public async Task<Pet> GetOne(int id)
+    {
       return await _context.Pets.FirstOrDefaultAsync(e => e.Id == id);
     }
 
-    public async Task<Pet> CreatePet(Pet pet) {
-      _context.Add(pet);
+    public async Task<Pet> Create(Pet pet)
+    {
+      var p = new Pet() {
+        Name = pet.Name,
+        BirthDate = pet.BirthDate
+      };
+      _context.Add(p);
       await _context.SaveChangesAsync();
-      return pet;
+      return p;
     }
 
-    public async Task<Pet> UpdatePet(Pet pet) {
-      _context.Update(pet);
+    public async Task<Pet> Update(Pet pet)
+    {
+      var p = new Pet() {
+        Name = pet.Name,
+        BirthDate = pet.BirthDate
+      };
+      _context.Update(p);
       await _context.SaveChangesAsync();
-      return pet;
+      return p;
     }
 
-    public async Task DeletePet(int id) {
+    public async Task Delete(int id)
+    {
       var pet = await _context.Pets.FindAsync(id);
       _context.Pets.Remove(pet);
       await _context.SaveChangesAsync();
